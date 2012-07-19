@@ -1,3 +1,5 @@
+" Allow unsaved buffers to lose focus
+set hidden
 " Line numbers
 set number
 " Do not select line numbers
