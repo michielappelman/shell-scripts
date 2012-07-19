@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# Check if the IP address of a server has changed and mail me if it did.
+
+tmp=`tempfile`
+prev=$HOME/.public-ip
+curl http://automation.whatismyip.com/n09230945.asp > $tmp
+if [ `cat $tmp` = '<h1>Service Unavailable</h1>' ] ; then
+        exit 1
+elif [ ! -s $tmp ] ;then
+        exit 1
+else
+        diff -s $tmp $prev &>/dev/null
+        check=$?
+        if [ $check -ne 0 ] ; then
+                echo "Public IP changed from $(cat $prev) to $(cat $tmp)"
+                cp $tmp $prev
+                echo -e "Subject: IP changed \nIP address has changed to $(cat $prev)" | /usr/sbin/sendmail me@email.com
+        fi 
+        rm $tmp 
+fi
+exit 0
